@@ -1,3 +1,8 @@
+# Problems
+- gossipcop_train is too large, there's a way to fix it later
+- changed the script a lot to make it simpler for other readers, maybe a little broken
+- no requirements.txt file yet
+
 # SocialScienceTheoriesOnDisinformation
 
 10 Social Theories Tested
@@ -12,3 +17,4 @@
 8. Supporting Evidence
 9. Language Vagueness
 10. Information Gap
+

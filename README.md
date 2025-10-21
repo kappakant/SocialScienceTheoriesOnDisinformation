@@ -3,7 +3,7 @@
 - changed the script a lot to make it simpler for other readers, maybe a little broken
 - no requirements.txt file yet
 
-# SocialScienceTheoriesOnDisinformation
+# Social Science Theories On Disinformation
 
 10 Social Theories Tested
 

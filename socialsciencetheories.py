@@ -611,7 +611,7 @@ feature_names = (
     ["Amplification Hypothesis"] +   #theory 2
     ["Scarcity Principle"] +        #theory 3
     ["Information Complexity"] +       #theory 4
-    ["Infernal Validation"] +     #theory 5
+    ["Internal Validation"] +     #theory 5
     ["Coherence"] +       #theory 6
     ["Credibility Source"]+            #theory 7
     ["Supporting Evidence"] +   #theory 8
@@ -653,7 +653,7 @@ feature_names = np.array([
     "Amplification Hypothesis", # 2
     "Scarcity Principle",       # 3
     "Information Complexity",   # 4
-    "Infernal Validation",      # 5
+    "Internal Validation",      # 5
     "Coherence",                # 6
     "Credibility Source",       # 7
     "Supporting Evidence",      # 8
@@ -745,7 +745,7 @@ feature_names = (
     ["Amplification Hypothesis"] +   #theory 2
     ["Scarcity Principle"] +        #theory 3
     ["Information Complexity"] +       #theory 4
-    ["Infernal Validation"] +     #theory 5
+    ["Internal Validation"] +     #theory 5
     ["Coherence"] +       #theory 6
     ["Credibility Source"]+            #theory 7
     ["Supporting Evidence"] +   #theory 8
@@ -775,7 +775,7 @@ feature_names = [
     "Amplification Hypothesis",
     "Scarcity Principle",
     "Information Complexity",
-    "Infernal Validation",
+    "Internal Validation",
     "Coherence",
     "Credibility Source",
     "Supporting Evidence",

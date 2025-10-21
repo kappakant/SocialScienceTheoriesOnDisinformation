@@ -2,6 +2,7 @@
 - `gossipcop_train` is too large — there's a way to fix it later (e.g., filtering by source credibility or truncating long articles).
 - Changed the script a lot to make it simpler for other readers — may introduce edge-case bugs.
 - No `requirements.txt` file yet — need to pin versions for reproducibility.
+- Accidentally deleted all datasets on github. Re-add them
 
 # Social Science Theories On Disinformation
 

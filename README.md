@@ -18,3 +18,4 @@
 9. Language Vagueness
 10. Information Gap
 
+## 1. Negativity Bias

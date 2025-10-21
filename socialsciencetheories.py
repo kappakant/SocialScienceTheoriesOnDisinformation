@@ -1,4 +1,3 @@
-# %% Imports
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -39,14 +38,13 @@ import shap
 
 warnings.filterwarnings("ignore")
 
-# %% Load datasets
+# GossipCop in this example
 training = pd.read_csv('~/csvs/gossipcop_train.csv', index_col=0).dropna()
 testing = pd.read_csv('~/csvs/gossipcop_test.csv', index_col=0).dropna()
 
 training['text'] = training['text'].str.lower()
 testing['text'] = testing['text'].str.lower()
 
-# %% Add URL information
 gossipcop_fake = pd.read_csv('~/csvs/gossipcop_fake.csv').dropna()
 gossipcop_real = pd.read_csv('~/csvs/gossipcop_real.csv').dropna()
 
@@ -86,7 +84,6 @@ matched_test = testing_merged['url'].notna().sum()
 print(f"[training] matched URLs: {matched_train} / {len(training_merged)}")
 print(f"[testing] matched URLs: {matched_test} / {len(testing_merged)}")
 
-# %% Prepare data
 train_data = training_merged
 test_data = testing_merged
 
@@ -98,7 +95,7 @@ y_test = test_data['label']
 training = training_merged
 testing = testing_merged
 
-# %% Theory 5 feature: Internal Validation (Logical Consistency)
+# Theory 5 feature: Internal Validation (Logical Consistency)
 def detect_logical_consistency(texts):
     entailment_pipeline = pipeline("text-classification", model="roberta-large-mnli", device=0)
     
@@ -164,7 +161,7 @@ X_test_consistency = detect_logical_consistency(X_test)
 accuracy = train_and_evaluate(X_train_consistency, X_test_consistency, y_train, y_test)
 print(f'Model Accuracy: {accuracy:.4f}')
 
-# %% Theory 6 feature: Coherence
+# Theory 6 feature: Coherence
 nlp = spacy.load('en_core_web_sm')
 
 def get_entity_grid(doc):
@@ -203,12 +200,12 @@ def compute_entity_grid_coherence(text):
 testing['coherence_score'] = testing['text'].apply(compute_entity_grid_coherence)
 training['coherence_score'] = training['text'].apply(compute_entity_grid_coherence)
 
-# %% Theory 7 features: Credibility Source
+# Theory 7 features: Credibility Source
 le = LabelEncoder()
 training['publisher_encoded'] = le.fit_transform(training['url'].astype(str))
 testing['publisher_encoded'] = le.fit_transform(testing['url'].astype(str))
 
-# %% Theory 8 feature: Supporting Evidence
+# Theory 8 feature: Supporting Evidence
 ATTRIB_PAT = re.compile(r"\b(according to|reported by|said|stated|told|a report by|as per|as reported by)\b", re.I)
 URL_PAT = re.compile(r'https?://\S+|www\.\S+', re.I)
 QUOTE_PAT = re.compile(r'["""\'''].+?["""\''']')
@@ -336,14 +333,14 @@ del Vague_tokenizer
 torch.cuda.empty_cache()
 gc.collect()
 
-# %% Theory 10 features: Information Gap
+# Theory 10 features: Information Gap
 training_title = training.copy()
 testing_title = testing.copy()
 
 training_title['title'] = training_title['title'].str.lower()
 testing_title['title'] = testing_title['title'].str.lower()
 
-# Needs "eager" due to weird issue.
+# Needs "eager" attn_implementation due to issue with our computer cluster, consider different attn_implementation for your case.
 LLM_model_name = "google/gemma-3-27b-it"
 LLM_tokenizer = AutoTokenizer.from_pretrained(LLM_model_name)
 LLM_model = AutoModelForCausalLM.from_pretrained(
@@ -484,13 +481,7 @@ testing_title['surprisingness_score'] = surp_scores
 testing_title['KL'] = kls
 testing_title['information_gap_score'] = w_punct * testing_title['punctuation_score'] + w_surp * testing_title['surprisingness_score']
 
-# llm model used in scarcity bias
-# del LLM_model
-# del LLM_tokenizer
-# torch.cuda.empty_cache()
-# gc.collect()
-
-# %% Theory 1 Feature: Negativity Bias
+# Theory 1 Feature: Negativity Bias
 analyzer = SentimentIntensityAnalyzer()
 
 def get_compound(text):
@@ -500,7 +491,7 @@ def get_compound(text):
 training['compound'] = training['text'].apply(get_compound)
 testing['compound'] = testing['text'].apply(get_compound)
 
-# %% Theory 2 Feature: Amplification Hypothesis
+# Theory 2 Feature: Amplification Hypothesis
 certain_words = {
     'absolute', 'absolutely', 'all', 'always', 'apparent', 'assured', 'certain', 'clear', 'clearly',
     'complete', 'confident', 'definitely', 'distinct', 'evident', 'fact', 'factual', 'forever',
@@ -530,7 +521,7 @@ def classify_certainty(text):
 training['amplification_label'] = training['text'].apply(classify_certainty)
 testing['amplification_label'] = testing['text'].apply(classify_certainty)
 
-# %% Theory 3 Feature: Scarcity Principle
+# Theory 3 Feature: Scarcity Principle
 def get_scarcity_label(text):
     truncated_text = text[:6000]
     
@@ -567,14 +558,14 @@ del LLM_tokenizer
 torch.cuda.empty_cache()
 gc.collect()
 
-# %% Theory 4 Feature: Information Complexity
+# Theory 4 Feature: Information Complexity
 def calculate_text_complexity(text):
     return textstat.flesch_reading_ease(text)
 
 training['info_complexity'] = training['text'].apply(calculate_text_complexity)
 testing['info_complexity'] = testing['text'].apply(calculate_text_complexity)
 
-# %% FINAL FND
+# FINAL FND
 X_train = np.hstack((
     training["compound"].values.reshape(-1, 1),
     training["amplification_label"].values.reshape(-1, 1),
@@ -608,7 +599,7 @@ accuracy = accuracy_score(y_test, y_pred)
 print(f"Accuracy: {accuracy:.4f}")
 print("Confusion Matrix:\n", confusion_matrix(y_test, y_pred))
 
-# %% Feature Importance Analysis
+# Feature Importance Analysis
 import textwrap
 from matplotlib.ticker import PercentFormatter
 
@@ -675,7 +666,7 @@ plt.savefig("feature_importance.svg", bbox_inches="tight")
 plt.savefig("feature_importance.png", dpi=300, bbox_inches="tight")
 plt.close()
 
-# %% Theory Importance Ranking
+# Theory Importance Ranking
 feature_importances = model.feature_importances_
 
 theory_importance = {
@@ -697,7 +688,7 @@ print("Theory Importance Ranking:")
 for theory, score in sorted_theories:
     print(f"{theory}: {score:.4f}")
 
-# %% Correlation Heatmap
+# Correlation Heatmap
 feature_names_list = [
     "Negativity Bias",
     "Confidence Heuristic",
@@ -721,7 +712,7 @@ plt.tight_layout()
 plt.savefig("correlation_heatmap.png", dpi=300, bbox_inches='tight')
 plt.close()
 
-# %% SHAP Analysis
+# SHAP Analysis
 explainer = shap.Explainer(model, X_train)
 shap_values = explainer(X_train)
 

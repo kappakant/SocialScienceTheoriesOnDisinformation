@@ -18,7 +18,11 @@
 9. Language Vagueness
 10. Information Gap
 
----
+# Usage
+Needs fake news training and testing dataset, and the vagueness dataset
+
+Modify dataset file path in the beginning of socialsciencetheories.py and near vagueness implementation.
+```python socialsciencetheories.py```
 
 ## 1. Negativity Bias
 **Hypothesis**: TBD

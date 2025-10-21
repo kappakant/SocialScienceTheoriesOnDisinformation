@@ -3,6 +3,7 @@
 - Changed the script a lot to make it simpler for other readers — may introduce edge-case bugs.
 - No `requirements.txt` file yet — need to pin versions for reproducibility.
 - Accidentally deleted all datasets on github. Re-add them
+- Re-run FnR, GossipCop, maybe ReCoVery to output pure data.
 
 # Social Science Theories On Disinformation
 
